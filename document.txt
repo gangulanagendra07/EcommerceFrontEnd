@@ -1,0 +1,5 @@
+Command's for nx application.
+
+serve --> nx serve --project=ngshop
+create library --> npx nx g @nrwl/workspace:lib ui
+create component for lib --> ng generate @schematics/angular:component --name=banner --project=ui --style=scss --export --prefix=ui --selector=banner --no-interactiveS
