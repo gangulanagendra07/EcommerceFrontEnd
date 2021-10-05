@@ -1,5 +1,5 @@
-//Base
-// @import '~normalize.css/noromalize.css';
+// Base Config
+@import '~normalize.css/normalize.css';
 @import './base/colors.scss';
 @import './base/fonts.scss';
 @import './base/mixins.scss';
@@ -9,16 +9,16 @@
 @import '~primeicons/primeicons.css';
 @import '~primeng/resources/themes/saga-blue/theme.css';
 @import '~primeng/resources/primeng.min.css';
-@import '~primeflex/primeflex.css';
+@import '~primeflex/primeflex.scss';
 
+//Shared
+@import './apps/admin/shell.scss';
 
+//Pages
+@import './apps/shop/pages/home-page.scss';
+@import './apps/shop/pages/product-list-page.scss';
 
-
-//Bootstarp
-@import '~bootstrap/scss/bootstrap.scss';
-
-
-
-//libs
-@import './libs/ui/ui.scss';
-
+//Libs
+@import './libs/products/product-item.scss';
+@import './libs/orders/orders.scss';
+@import './libs/users/users.scss';
