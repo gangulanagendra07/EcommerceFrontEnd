@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
 import { CategoriesService, Category } from '@bluebits/products';
+
 
 @Component({
   selector: 'admin-categories-list',
@@ -14,7 +16,7 @@ export class CategoriesListComponent implements OnInit {
 
   categories: Category[] = [];
 
-  constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private catergoriesService: CategoriesService) { }
+  constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private catergoriesService: CategoriesService, private router: Router) { }
 
   ngOnInit(): void {
      this._getCategories();
@@ -40,6 +42,11 @@ export class CategoriesListComponent implements OnInit {
 
       }
   });
+  }
+
+  UpdateCategory(categoryId: string){
+      this.router.navigateByUrl(`categories/form/${categoryId}`);
+      
   }
 
   private _getCategories() {
