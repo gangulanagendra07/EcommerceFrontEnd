@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MessageService } from 'primeng/api';
-import { timer } from 'rxjs';
+import { Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CategoriesService, Category } from '@bluebits/products';
 import { ActivatedRoute } from '@angular/router';
-
-
-
 
 @Component({
   selector: 'admin-categories-form',
@@ -16,12 +14,13 @@ import { ActivatedRoute } from '@angular/router';
   styles: [
   ]
 })
-export class CategoriesFormComponent implements OnInit {
+export class CategoriesFormComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
   isSubmitted = false;
   editMode = false;
   currentCategoryId!: string;
+  endsubs$: Subject<any> = new Subject();
 
 
   constructor(private messageService: MessageService, private location: Location, private formBuilder: FormBuilder, private categoryService: CategoriesService, private route: ActivatedRoute) { }
@@ -35,7 +34,11 @@ export class CategoriesFormComponent implements OnInit {
     })
 
     this._checkEditMode();
+  }
 
+  ngOnDestroy() {
+    this.endsubs$.next();
+    this.endsubs$.complete();
   }
 
   onSubmit() {
@@ -63,18 +66,18 @@ export class CategoriesFormComponent implements OnInit {
 
   }
 
-  onCancel(){
+  onCancel() {
     this.location.back();
   }
 
   private _addCategory(category: Category) {
 
-    this.categoryService.createCategory(category).subscribe((response) => {
+    this.categoryService.createCategory(category).pipe(takeUntil(this.endsubs$)).subscribe((response) => {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: `Category  ${response.name} is created` });
       timer(200).toPromise().then(() => {
-         setTimeout(() => {
+        setTimeout(() => {
           this.location.back();
-         },1000)
+        }, 1000)
 
       })
     },
@@ -86,12 +89,12 @@ export class CategoriesFormComponent implements OnInit {
 
   private _updateCategory(category: Category) {
 
-    this.categoryService.updateCategory(category).subscribe((response) => {
+    this.categoryService.updateCategory(category).pipe(takeUntil(this.endsubs$)).subscribe((response) => {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: `Category  ${response.name} is updated` });
       timer(200).toPromise().then(() => {
         setTimeout(() => {
           this.location.back();
-         },1000)
+        }, 1000)
       })
     },
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -105,7 +108,7 @@ export class CategoriesFormComponent implements OnInit {
       if (params.id) {
         this.editMode = true;
         this.currentCategoryId = params.id;
-        this.categoryService.getCategory(params.id).subscribe(category => {
+        this.categoryService.getCategory(params.id).pipe(takeUntil(this.endsubs$)).subscribe(category => {
           this.categoryForm.name.setValue(category.name);
           this.categoryForm.icon.setValue(category.icon);
           this.categoryForm.color.setValue(category.color);
@@ -118,3 +121,7 @@ export class CategoriesFormComponent implements OnInit {
     return this.form.controls;
   }
 }
+function ngOnDestroy() {
+  throw new Error('Function not implemented.');
+}
+

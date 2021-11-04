@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @angular-eslint/no-empty-lifecycle-method */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MessageService } from 'primeng/api';
-import { timer } from 'rxjs';
+import { Subject, timer } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CategoriesService, ProductsService, Category, Product } from '@bluebits/products';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -16,7 +18,7 @@ import { CategoriesService, ProductsService, Category, Product } from '@bluebits
   styles: [
   ]
 })
-export class ProductsFormComponent implements OnInit {
+export class ProductsFormComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
   editmode = false;
@@ -24,6 +26,8 @@ export class ProductsFormComponent implements OnInit {
   catagories: any = [];
   imageDisplay: any;
   currentProductId!: string;
+
+  endsubs$: Subject<any> = new Subject();
 
 
 
@@ -35,6 +39,11 @@ export class ProductsFormComponent implements OnInit {
     this._getCategories();
     this._checkEditMode();
 
+  }
+
+  ngOnDestroy() {
+    this.endsubs$.next();
+    this.endsubs$.complete();
   }
 
   private _initForm() {
@@ -116,7 +125,7 @@ export class ProductsFormComponent implements OnInit {
 
   private _addProduct(productData: FormData) {
 
-    this.productsService.createProduct(productData).subscribe((product: Product) => {
+    this.productsService.createProduct(productData).pipe(takeUntil(this.endsubs$)).subscribe((product: Product) => {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product  ${product.name} is created` });
       timer(200).toPromise().then(() => {
         setTimeout(() => {
@@ -133,7 +142,7 @@ export class ProductsFormComponent implements OnInit {
 
   private _updateProduct(productData: FormData) {
 
-    this.productsService.updateProduct( productData, this.currentProductId).subscribe((product: Product) => {
+    this.productsService.updateProduct( productData, this.currentProductId).pipe(takeUntil(this.endsubs$)).subscribe((product: Product) => {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: `Product  ${product.name} is updated` });
       timer(200).toPromise().then(() => {
         setTimeout(() => {

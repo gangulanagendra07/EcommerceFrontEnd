@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
 import { CategoriesService, Category, ProductsService } from '@bluebits/products';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'admin-products-list',
@@ -12,9 +14,10 @@ import { CategoriesService, Category, ProductsService } from '@bluebits/products
   styles: [
   ]
 })
-export class ProductsListComponent implements OnInit {
+export class ProductsListComponent implements OnInit, OnDestroy {
 
   products: any = [];
+  endsubs$: Subject<any> = new Subject();
 
   constructor(private productsService: ProductsService, private router: Router, private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
@@ -22,8 +25,13 @@ export class ProductsListComponent implements OnInit {
     this._getProducts();
   }
 
+  ngOnDestroy() {
+    this.endsubs$.next();
+    this.endsubs$.complete();
+  }
+
   private _getProducts() {
-    this.productsService.getProducts().subscribe(products => {
+    this.productsService.getProducts().pipe(takeUntil(this.endsubs$)).subscribe(products => {
       this.products = products;
     })
   }
@@ -36,7 +44,7 @@ export class ProductsListComponent implements OnInit {
       header: 'Delete product',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.productsService.deleteProduct(productId).subscribe((response) => {
+        this.productsService.deleteProduct(productId).pipe(takeUntil(this.endsubs$)).subscribe((response) => {
           this._getProducts();
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product Is Deleted' });
         },
