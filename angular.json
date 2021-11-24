@@ -117,7 +117,7 @@
             "projectType": "application",
             "root": "apps/ngshop",
             "sourceRoot": "apps/ngshop/src",
-            "prefix": "bluebits",
+            "prefix": "ngshop",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
@@ -287,22 +287,23 @@
             }
         },
         "ui": {
+            "projectType": "library",
             "root": "libs/ui",
             "sourceRoot": "libs/ui/src",
-            "projectType": "library",
+            "prefix": "ui",
             "architect": {
-                "lint": {
-                    "builder": "@nrwl/linter:eslint",
-                    "options": {
-                        "lintFilePatterns": ["libs/ui/**/*.ts"]
-                    }
-                },
                 "test": {
                     "builder": "@nrwl/jest:jest",
                     "outputs": ["coverage/libs/ui"],
                     "options": {
                         "jestConfig": "libs/ui/jest.config.js",
                         "passWithNoTests": true
+                    }
+                },
+                "lint": {
+                    "builder": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": ["libs/ui/src/**/*.ts", "libs/ui/src/**/*.html"]
                     }
                 }
             }

@@ -47,12 +47,13 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
   }
 
   private _getOrder() {
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
       if (params.id) {
         this.orderService
           .getOrder(params.id)
           .pipe(takeUntil(this.endsubs$))
           .subscribe((order) => {
+            console.log(order);
             this.order = order;
             this.selectedStatus = order.status;
           });

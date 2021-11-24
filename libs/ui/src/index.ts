@@ -1,2 +1,1 @@
-export * from './lib/ui';
-export* from './ui.module';
+export * from './lib/ui.module';

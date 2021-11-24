@@ -76,7 +76,7 @@
                             <input type="file" class="p-inputtext" accept="image/*" (change)="onImageUpload($event)" />
                             <small *ngIf="productForm.image.invalid && isSubmitted" class="p-error">Image is required</small>
                             <div class="p-col-2 p-mt-2 p-pl-0">
-                                <img style="width: 50%" [src]="imageDisplay" alt="" />
+                                <img  style="height: 60%; width: 50%" [src]="imageDisplay" alt="" />
                             </div>
                         </div>
                     </div>
