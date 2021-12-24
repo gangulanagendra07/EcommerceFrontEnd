@@ -94,7 +94,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
       if (params.id) {
         this.editmode = true;
         this.currentProductId = params.id;
-        this.productsService.getPrduct(params.id).subscribe((product) => {
+        this.productsService.getProduct(params.id).subscribe((product) => {
           this.productForm.name.setValue(product.name);
           this.productForm.category.setValue(product.category?.id);
           this.productForm.brand.setValue(product.brand);

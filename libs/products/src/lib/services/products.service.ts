@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product } from '../models/product';
@@ -18,28 +18,27 @@ export class ProductsService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts(): Observable<Product[]> {
-
-    return this.http.get<Product[]>(`${this.apiURLProducts}`);
-
-  }
-  getPrduct(productId: string): Observable<Product> {
-
-    return this.http.get<Product>(`${this.apiURLProducts}/${productId}`);
-
+  getProducts(categoriesFilter?: string[]): Observable<Product[]> {
+    let params = new HttpParams();
+    if (categoriesFilter) {
+      params = params.append('categories', categoriesFilter.join(','));
+    }
+    return this.http.get<Product[]>(this.apiURLProducts, { params: params });
   }
 
   createProduct(productData: FormData): Observable<Product> {
-
-    return this.http.post<Product>(`${this.apiURLProducts}`, productData);
+    return this.http.post<Product>(this.apiURLProducts, productData);
   }
 
-  updateProduct(productData: FormData, productId: string): Observable<Product> {
-
-    return this.http.put<Product>(`${this.apiURLProducts}/${productId}`, productData);
+  getProduct(productId: string): Observable<Product> {
+    return this.http.get<Product>(`${this.apiURLProducts}/${productId}`);
   }
+
+  updateProduct(productData: FormData, productid: string): Observable<Product> {
+    return this.http.put<Product>(`${this.apiURLProducts}/${productid}`, productData);
+  }
+
   deleteProduct(productId: string): Observable<any> {
-
     return this.http.delete<any>(`${this.apiURLProducts}/${productId}`);
   }
 
@@ -48,6 +47,7 @@ export class ProductsService {
       .get<number>(`${this.apiURLProducts}/get/count`)
       .pipe(map((objectValue: any) => objectValue.productCount));
   }
+
   getFeaturedProducts(count: number): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.apiURLProducts}/get/featured/${count}`);
   }
