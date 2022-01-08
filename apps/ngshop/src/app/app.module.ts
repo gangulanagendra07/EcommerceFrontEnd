@@ -16,6 +16,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavComponent } from './shared/nav/nav.component';
+import { OrdersModule } from '@bluebits/orders';
 
 
 
@@ -25,7 +26,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [AppComponent, HomePageComponent, HeaderComponent, FooterComponent, NavComponent],
-  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, RouterModule.forRoot(routes), UiModule, ProductsModule, AccordionModule],
+  imports: [BrowserModule, BrowserAnimationsModule, FormsModule, RouterModule.forRoot(routes), UiModule, ProductsModule, OrdersModule, AccordionModule],
   providers: [],
   bootstrap: [AppComponent]
 })
